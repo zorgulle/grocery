@@ -6,7 +6,7 @@ app = FlaskAPI(__name__)
 PRODUCTS = []
 
 
-def create_product(product):
+def add_product(product):
     PRODUCTS.append(product)
 
 
@@ -16,13 +16,15 @@ def get_product(product_id):
     return list(product)
 
 
-@app.route('/products', methods=['GET', 'POST'])
+@app.route('/products', methods=['POST'])
+def create_product():
+    add_product(request.json)
+    return PRODUCTS[-1]
+
+
+@app.route('/products', methods=['GET'])
 def products():
-    if request.method == 'POST':
-        create_product(request.json)
-        return PRODUCTS[-1]
-    elif request.method == 'GET':
-        return PRODUCTS
+    return PRODUCTS
 
 
 @app.route('/', methods=['GET'])
