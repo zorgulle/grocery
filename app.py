@@ -1,32 +1,57 @@
+"""
+This is the entry point of the app
+"""
 from flask import request
 from flask_api import FlaskAPI
 
-app = FlaskAPI(__name__)
+APP = FlaskAPI(__name__)
 
 
 class Product:
+    """This is the product Model manager
+    """
     def __init__(self):
         self.products = []
 
     def add(self, product):
+        """Add a products into the model
+        :param product: product to add
+        :return: None
+        """
         self.products.append(product)
 
     def all(self):
+        """Get all products from the model
+        :return: list(dict)
+        """
         return self.products
 
 
 class ProductManager:
+    """Logic
+    """
     def __init__(self, model):
         self.model = model
 
     def add_product(self, product):
+        """This is the loguic of add product
+        :param product: product to add from client
+        :return: product added
+        """
         self.model.add(product)
         return self.model.all()[-1]
 
     def get_product(self, product_id):
+        """Get seach produc with id
+        :param product_id: id of product
+        :return: product with id == product_id
+        """
         return list(filter(lambda x: x['id'] == product_id, self.model.all()))
 
     def get_products(self):
+        """Get all products
+        :return: all products
+        """
         return self.model.all()
 
 
@@ -34,27 +59,39 @@ MODEL = Product()
 PRODUCT_MANAGER = ProductManager(MODEL)
 
 
-@app.route('/products/<int:product_id>', methods=['GET'])
+@APP.route('/products/<int:product_id>', methods=['GET'])
 def get_product(product_id):
-    products = PRODUCT_MANAGER.get_product(product_id)
-    return products
+    """View of get product
+    :param product_id:
+    :return: list(dict)
+    """
+    return PRODUCT_MANAGER.get_product(product_id)
 
 
-@app.route('/products', methods=['POST'])
+@APP.route('/products', methods=['POST'])
 def create_product():
+    """View of create products
+    :return: product
+    """
     product = PRODUCT_MANAGER.add_product(request.json)
     return product
 
 
-@app.route('/products', methods=['GET'])
+@APP.route('/products', methods=['GET'])
 def products():
+    """view for get all products
+    :return: all products
+    """
     return PRODUCT_MANAGER.get_products()
 
 
-@app.route('/', methods=['GET'])
+@APP.route('/', methods=['GET'])
 def index():
+    """Ping
+    :return: dict
+    """
     return {'mgs': 'Ok'}
 
 
 if __name__ == '__main__':
-    app.run('0.0.0.0', debug=True)
+    APP.run('0.0.0.0', debug=True)
