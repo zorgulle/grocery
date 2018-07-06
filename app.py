@@ -3,28 +3,40 @@ from flask_api import FlaskAPI
 
 app = FlaskAPI(__name__)
 
-PRODUCTS = []
+
+class ProductManager:
+    def __init__(self):
+        self.products = []
+
+    def add_product(self, product):
+        self.products.append(product)
+        return self.products[-1]
+
+    def get_product(self, product_id):
+        return list(filter(lambda x: x['id'] == product_id, self.products))
+
+    def get_products(self):
+        return self.products
 
 
-def add_product(product):
-    PRODUCTS.append(product)
+PRODUCT_MANAGER = ProductManager()
 
 
 @app.route('/products/<int:product_id>', methods=['GET'])
 def get_product(product_id):
-    product = filter(lambda x: x['id'] == product_id, PRODUCTS)
-    return list(product)
+    products = PRODUCT_MANAGER.get_product(product_id)
+    return products
 
 
 @app.route('/products', methods=['POST'])
 def create_product():
-    add_product(request.json)
-    return PRODUCTS[-1]
+    product = PRODUCT_MANAGER.add_product(request.json)
+    return product
 
 
 @app.route('/products', methods=['GET'])
 def products():
-    return PRODUCTS
+    return PRODUCT_MANAGER.get_products()
 
 
 @app.route('/', methods=['GET'])
