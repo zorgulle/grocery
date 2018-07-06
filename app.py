@@ -10,8 +10,14 @@ def create_product(product):
     PRODUCTS.append(product)
 
 
+@app.route('/products/<int:product_id>', methods=['GET'])
+def get_product(product_id):
+    product = filter(lambda x: x['id'] == product_id, PRODUCTS)
+    return list(product)
+
+
 @app.route('/products', methods=['GET', 'POST'])
-def prodcuts():
+def products():
     if request.method == 'POST':
         create_product(request.json)
         return PRODUCTS[-1]
