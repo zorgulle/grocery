@@ -51,7 +51,6 @@ def get_products():
 
 @APP.route('/products', methods=['POST'])
 def create_product():
-    import ipdb; ipdb.set_trace()
     data = request.json
     product = session.query(Stock).filter_by(ean=data['ean']).first()
     if product:
@@ -63,9 +62,6 @@ def create_product():
 
 @APP.route('/', methods=['GET'])
 def index():
-    """Ping
-    :return: dict
-    """
     return {'mgs': "ok"}
 
 
