@@ -26,6 +26,11 @@ class Product:
         """
         return self.products
 
+    def get_product_with_quantity(self):
+        ids = (product['id'] for product in products)
+        from collections import Counter
+        counter = Counter(ids)
+        print(counter)
 
 class ProductManager:
     """Logic
