@@ -26,11 +26,6 @@ class Product:
         """
         return self.products
 
-    def get_product_with_quantity(self):
-        ids = (product['id'] for product in products)
-        from collections import Counter
-        counter = Counter(ids)
-        print(counter)
 
 class ProductManager:
     """Logic
@@ -59,9 +54,24 @@ class ProductManager:
         """
         return self.model.all()
 
+    def get_product_with_quantity(self):
+        products = self.model.all()
+        ids = (product['ean'] for product in products)
+        from collections import Counter
+        counter = Counter(ids)
+        return counter
+
 
 MODEL = Product()
 PRODUCT_MANAGER = ProductManager(MODEL)
+
+@APP.route('/fridge', methods=['GET'])
+def fridge():
+    """
+    Get products in the fridge
+    :return:
+    """
+    return PRODUCT_MANAGER.get_product_with_quantity()
 
 
 @APP.route('/products/<int:product_id>', methods=['GET'])
