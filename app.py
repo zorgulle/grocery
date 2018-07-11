@@ -1,19 +1,21 @@
 """
 This is the entry point of the app
 """
-import sqlalchemy
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, Integer
+
 from flask_api import FlaskAPI
 from flask import request
 
 APP = FlaskAPI(__name__)
-engine = sqlalchemy.create_engine('sqlite:///my_db.db')
+engine = create_engine('sqlite:///my_db.db')
 session = sessionmaker(bind=engine, autocommit=True)()
 
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, String, Integer
 
 Base = declarative_base()
+
 
 class Stock(Base):
     __tablename__='Stock'
