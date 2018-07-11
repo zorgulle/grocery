@@ -23,6 +23,8 @@ class Stock(Base):
     ean = Column(String, primary_key=True)
     quantity= Column(Integer)
 
+def format_product(product):
+    return {'ean': product.ean, 'quantity': product.quantity}
 
 @APP.route('/products/<string:ean>', methods=['DELETE'])
 def delete_product(ean):
@@ -34,7 +36,7 @@ def delete_product(ean):
     product.quantity = max(0, product.quantity)
 
     session.add(product)
-    return {'ean': product.ean, 'quantity': product.quantity}
+    return format_product(product)
 
 
 @APP.route('/products/<string:ean>', methods=['GET'])
@@ -42,13 +44,13 @@ def get_product(ean):
     product = session.query(Stock).filter_by(ean=ean).first()
     if not product:
         return {"Error": "No product found"}
-    return {'ean': product.ean, 'quantity': product.quantity}
+    return format_product(product)
 
 
 @APP.route('/products', methods=['GET'])
 def get_products():
     products = session.query(Stock).all()
-    return [{'ean': product.ean, 'quantity': product.quantity} for product in products]
+    return [format_product(product) for product in products]
 
 
 @APP.route('/products', methods=['POST'])
@@ -60,7 +62,8 @@ def create_product():
     else:
         product = Stock(ean=data['ean'], quantity=1)
     session.add(product)
-    return {'ean': product.ean, 'quantity': product.quantity}
+    return format_product(product)
+
 
 @APP.route('/', methods=['GET'])
 def index():
