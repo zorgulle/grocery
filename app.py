@@ -23,11 +23,30 @@ class Stock(Base):
     ean = Column(String, primary_key=True)
     quantity= Column(Integer)
 
+
 def format_product(product):
+    """
+    format product to render in API
+    :param product: product to format
+    :type product: sqlalchemy object
+
+    :return: formated product
+    :rtype: {ean: str, quantity: int}
+    """
     return {'ean': product.ean, 'quantity': product.quantity}
+
 
 @APP.route('/products/<string:ean>', methods=['DELETE'])
 def delete_product(ean):
+    """
+    Decrease quantity of product with ean if found.
+    floor quantity to Zero.
+
+    :param ean: ean of product
+    :type ean: string
+    :return: product with the new quantity
+    :rtype: see format_product doc
+    """
     product = session.query(Stock).filter_by(ean=ean).first()
     if not product:
         return {"Error": "No product found"}
@@ -41,6 +60,13 @@ def delete_product(ean):
 
 @APP.route('/products/<string:ean>', methods=['GET'])
 def get_product(ean):
+    """
+    return infos of the first product found with ean
+    :param ean: ean of product
+    :type ean: string
+    :return: formated product
+    :rtype: see format_product
+    """
     product = session.query(Stock).filter_by(ean=ean).first()
     if not product:
         return {"Error": "No product found"}
@@ -49,12 +75,25 @@ def get_product(ean):
 
 @APP.route('/products', methods=['GET'])
 def get_products():
+    """
+    Get details of all products
+    :return: all product formated
+    :rtype: lis[formated_product]
+    """
     products = session.query(Stock).all()
     return [format_product(product) for product in products]
 
 
 @APP.route('/products', methods=['POST'])
 def create_product():
+    """
+    Create product
+    body
+    ----
+    {'ean': str}
+    :return: created product formated
+    :rtype: formated product
+    """
     data = request.json
     product = session.query(Stock).filter_by(ean=data['ean']).first()
     if product:
