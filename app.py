@@ -1,3 +1,4 @@
+#TODO: Search product name from bar code id on internet
 """
 This is the entry point of the app
 """

@@ -1,3 +1,5 @@
+#TODO: Add delete product
+#TODO: Add list product
 """Client side to be installed on rasberry pi with a zapper
 """
 import os
