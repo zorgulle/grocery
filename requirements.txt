@@ -2,3 +2,4 @@ flask_api
 ipdb
 flask
 SQLAlchemy
+requests
