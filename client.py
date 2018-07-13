@@ -1,3 +1,5 @@
+"""Client side to be installed on rasberry pi with a zapper
+"""
 import os
 import requests
 
